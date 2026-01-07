@@ -3,14 +3,9 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>CHIẾN TRICKER //</title>
+<title>CHIẾN TRICKER // ULTIMATE</title>
 
 <meta name="theme-color" content="#00ff9c" />
-
-<link rel="manifest" href="manifest.json">
-<link rel="icon" href="icons/icon-192.png">
-<link rel="icon" href="icons/icon-512.png">
-<link rel="apple-touch-icon" href="icons/icon-192.png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -37,6 +32,11 @@ body{
 /* MATRIX RAIN */
 #matrix{position:fixed;inset:0;z-index:0;opacity:.45;filter:blur(.3px) saturate(160%)}
 
+/* PARTICLES */
+#particles{position:fixed;inset:0;z-index:1;pointer-events:none}
+.particle{position:absolute;width:3px;height:3px;border-radius:50%;background:var(--neon-g);box-shadow:0 0 8px var(--neon-g);animation:float 8s infinite ease-in-out}
+@keyframes float{0%,100%{transform:translateY(0) translateX(0)}25%{transform:translateY(-30px) translateX(20px)}50%{transform:translateY(-10px) translateX(-15px)}75%{transform:translateY(-40px) translateX(10px)}}
+
 /* LAYOUT */
 .app{position:relative;z-index:2;min-height:100%;display:grid;place-items:center;padding:24px}
 .panel{
@@ -47,132 +47,759 @@ body{
   border-radius:20px;
   padding:26px 28px 30px;
   backdrop-filter:blur(6px);
+  position:relative;
+  overflow:hidden;
 }
-#terminal.panel{width:min(780px,96vw)}
+.panel::before{
+  content:'';position:absolute;inset:-50%;
+  background:conic-gradient(from 0deg at 50% 50%, transparent 0deg, rgba(0,255,156,.15) 90deg, transparent 180deg);
+  animation:rotate 8s linear infinite;pointer-events:none;
+}
+@keyframes rotate{100%{transform:rotate(360deg)}}
+
+#terminal.panel{width:min(880px,96vw)}
+#auth.panel{width:min(380px,92vw)}
 
 /* TITLE */
 .title{
   font-weight:800;letter-spacing:2px;font-size:38px;line-height:1.1;margin:0 0 6px;
   color:var(--neon-g);
-  text-shadow:0 0 18px rgba(0,255,156,.9), 0 0 40px rgba(0,195,255,.7), 0 0 60px rgba(180,0,255,.6)
+  text-shadow:0 0 18px rgba(0,255,156,.9), 0 0 40px rgba(0,195,255,.7), 0 0 60px rgba(180,0,255,.6);
+  position:relative;z-index:2;
 }
-.subtitle{font-family:'Share Tech Mono',monospace;color:#9ad7ff;opacity:.9;margin:0 0 18px;font-size:13px}
+.subtitle{font-family:'Share Tech Mono',monospace;color:#9ad7ff;opacity:.9;margin:0 0 18px;font-size:13px;position:relative;z-index:2}
 
 /* GLITCH */
-.glitch{position:relative}
+.glitch{position:relative;display:inline-block}
 .glitch::before,.glitch::after{content:attr(data-text);position:absolute;left:0;top:0;width:100%;overflow:hidden}
 .glitch::before{color:var(--neon-p);clip-path:inset(0 0 55% 0);animation:gl1 2.2s infinite linear alternate}
 .glitch::after{color:var(--neon-b);clip-path:inset(45% 0 0 0);animation:gl2 1.8s infinite linear alternate}
-@keyframes gl1{0%{transform:translate(0)}50%{transform:translate(1px,-1px)}100%{transform:translate(-1px,1px)}}
-@keyframes gl2{0%{transform:translate(0)}50%{transform:translate(-1px,1px)}100%{transform:translate(1px,-1px)}}
+@keyframes gl1{0%{transform:translate(0)}50%{transform:translate(2px,-2px)}100%{transform:translate(-2px,2px)}}
+@keyframes gl2{0%{transform:translate(0)}50%{transform:translate(-2px,2px)}100%{transform:translate(2px,-2px)}}
+
+.glitch:hover{animation:glitchShake .5s infinite}
+@keyframes glitchShake{0%,100%{transform:translate(0)}25%{transform:translate(-3px,2px)}50%{transform:translate(3px,-2px)}75%{transform:translate(-2px,-3px)}}
 
 /* FORM */
-.group{margin-bottom:14px}
+.group{margin-bottom:14px;position:relative;z-index:2}
 label{display:block;margin-bottom:6px;font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:1px;color:var(--neon-b)}
-input{width:100%;padding:11px 12px;border-radius:12px;background:#050a12;border:1px solid rgba(0,195,255,.45);color:#eaffff;outline:none}
-input:focus{border-color:var(--neon-g);box-shadow:0 0 0 1px rgba(0,255,156,.6), 0 0 18px rgba(0,255,156,.35)}
+input{
+  width:100%;padding:11px 12px;border-radius:12px;
+  background:#050a12;border:1px solid rgba(0,195,255,.45);
+  color:#eaffff;outline:none;font-family:'Share Tech Mono',monospace;
+  transition:all .3s;
+}
+input:focus{
+  border-color:var(--neon-g);
+  box-shadow:0 0 0 1px rgba(0,255,156,.6), 0 0 18px rgba(0,255,156,.35);
+  background:rgba(0,255,156,.05);
+}
+input.error{border-color:var(--neon-r);animation:shake .3s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+
+.error-msg{color:var(--neon-r);font-size:11px;margin-top:4px;font-family:'Share Tech Mono',monospace}
 
 /* NEON BUTTON */
 .btn{
   width:100%;margin-top:10px;padding:14px 16px;border-radius:16px;
   background:linear-gradient(90deg, rgba(0,255,156,.25), rgba(180,0,255,.35), rgba(0,195,255,.35));
   border:1px solid rgba(0,255,156,.75);color:#00140b;
-  font-weight:900;letter-spacing:2px;cursor:pointer;position:relative;overflow:hidden
+  font-weight:900;letter-spacing:2px;cursor:pointer;position:relative;overflow:hidden;
+  transition:all .3s;z-index:2;
 }
 .btn span{position:relative;z-index:2}
-.btn::before{content:'';position:absolute;inset:-2px;filter:blur(20px);background:conic-gradient(from 0deg, var(--neon-g), var(--neon-b), var(--neon-p), var(--neon-r), var(--neon-g));opacity:.0;transition:.25s}
+.btn::before{
+  content:'';position:absolute;inset:-2px;filter:blur(20px);
+  background:conic-gradient(from 0deg, var(--neon-g), var(--neon-b), var(--neon-p), var(--neon-r), var(--neon-g));
+  opacity:0;transition:.3s;
+}
 .btn:hover::before{opacity:1}
-.btn:hover{box-shadow:0 0 45px rgba(0,255,156,.9), 0 0 65px rgba(180,0,255,.8)}
+.btn:hover{
+  box-shadow:0 0 45px rgba(0,255,156,.9), 0 0 65px rgba(180,0,255,.8);
+  transform:translateY(-2px);
+}
+.btn:active{transform:translateY(0)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
 
 /* SCRAMBLE */
 .scramble{font-family:'Share Tech Mono',monospace}
 
+/* STATUS INDICATORS */
+.status-bar{display:flex;gap:10px;margin-bottom:16px;position:relative;z-index:2}
+.led{width:12px;height:12px;border-radius:50%;position:relative}
+.led::after{content:'';position:absolute;inset:-2px;border-radius:50%;opacity:.6}
+.led.active{animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 5px currentColor}50%{box-shadow:0 0 20px currentColor,0 0 30px currentColor}}
+.led.green{background:var(--neon-g);color:var(--neon-g)}
+.led.blue{background:var(--neon-b);color:var(--neon-b)}
+.led.purple{background:var(--neon-p);color:var(--neon-p)}
+.led.red{background:var(--neon-r);color:var(--neon-r)}
+
+/* PROGRESS BAR */
+.progress-container{margin:16px 0;position:relative;z-index:2}
+.progress-bar{height:8px;background:rgba(0,255,156,.1);border-radius:10px;overflow:hidden;border:1px solid rgba(0,255,156,.3)}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--neon-g),var(--neon-b),var(--neon-p));width:0%;transition:width .5s;position:relative}
+.progress-fill::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);
+  animation:shimmer 2s infinite;
+}
+@keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.progress-text{font-size:11px;margin-top:4px;color:var(--neon-b);font-family:'Share Tech Mono',monospace}
+
 /* TERMINAL */
-#screen{margin-top:10px;height:380px;overflow:auto;background:#02060b;border:1px solid rgba(0,255,156,.45);border-radius:14px;padding:14px;font-family:'Share Tech Mono',monospace;font-size:13px}
-.log{margin-bottom:6px;white-space:pre}
-.ok{color:var(--neon-g)}.warn{color:var(--neon-y)}.info{color:var(--neon-b)}
+#screen{
+  margin-top:10px;height:380px;overflow:auto;
+  background:#02060b;border:1px solid rgba(0,255,156,.45);
+  border-radius:14px;padding:14px;
+  font-family:'Share Tech Mono',monospace;font-size:13px;
+  position:relative;z-index:2;
+}
+#screen::-webkit-scrollbar{width:8px}
+#screen::-webkit-scrollbar-track{background:rgba(0,255,156,.05)}
+#screen::-webkit-scrollbar-thumb{background:rgba(0,255,156,.3);border-radius:4px}
+#screen::-webkit-scrollbar-thumb:hover{background:rgba(0,255,156,.5)}
+
+.log{margin-bottom:6px;white-space:pre;animation:logAppear .2s}
+@keyframes logAppear{0%{opacity:0;transform:translateX(-10px)}100%{opacity:1;transform:translateX(0)}}
+.ok{color:var(--neon-g)}.warn{color:var(--neon-y)}.info{color:var(--neon-b)}.error{color:var(--neon-r)}
 
 /* CURSOR */
-.cursor::after{content:'▍';margin-left:6px;animation:blink 1s infinite}
+.cursor::after{content:'▊';margin-left:6px;animation:blink 1s infinite}
 @keyframes blink{50%{opacity:0}}
 
+/* TERMINAL CONTROLS */
+.terminal-controls{display:flex;gap:10px;margin-top:12px;position:relative;z-index:2}
+.terminal-controls .btn{margin:0}
+
+/* ENCRYPTION OVERLAY */
+.encrypt-overlay{
+  position:fixed;inset:0;z-index:999;
+  background:rgba(0,0,0,.95);
+  display:none;place-items:center;
+}
+.encrypt-overlay.active{display:grid}
+.encrypt-box{
+  text-align:center;font-family:'Share Tech Mono',monospace;
+  color:var(--neon-g);
+}
+.encrypt-text{font-size:24px;margin-bottom:20px;letter-spacing:4px}
+.spinner{
+  width:60px;height:60px;margin:20px auto;
+  border:4px solid rgba(0,255,156,.2);
+  border-top-color:var(--neon-g);
+  border-radius:50%;
+  animation:spin 1s linear infinite;
+}
+@keyframes spin{100%{transform:rotate(360deg)}}
+
+/* AUTH SCREEN */
+#auth{text-align:center}
+.auth-lock{
+  font-size:60px;margin:20px 0;
+  color:var(--neon-r);
+  text-shadow:0 0 30px var(--neon-r);
+  animation:lockPulse 2s infinite;
+}
+@keyframes lockPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+
+.access-denied{
+  color:var(--neon-r);
+  font-weight:800;
+  animation:denied 1s;
+}
+@keyframes denied{
+  0%{transform:scale(1)}
+  25%{transform:scale(1.2) rotate(5deg)}
+  50%{transform:scale(1) rotate(-5deg)}
+  75%{transform:scale(1.2) rotate(5deg)}
+  100%{transform:scale(1) rotate(0)}
+}
+
+/* INSTALL PWA BUTTON */
+.install-prompt{
+  position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
+  z-index:100;background:rgba(0,255,156,.9);color:#000;
+  padding:12px 24px;border-radius:12px;
+  font-weight:800;cursor:pointer;
+  box-shadow:0 0 30px rgba(0,255,156,.8);
+  display:none;animation:slideUp .5s;
+}
+@keyframes slideUp{0%{transform:translateX(-50%) translateY(100px);opacity:0}100%{transform:translateX(-50%) translateY(0);opacity:1}}
+
 /* SCANLINES */
-body::after{content:'';position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(to bottom,rgba(255,255,255,.06) 0 1px,rgba(0,0,0,0) 1px 3px);mix-blend-mode:overlay;opacity:.25;animation:scan 6s linear infinite}
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(to bottom,rgba(255,255,255,.06) 0 1px,rgba(0,0,0,0) 1px 3px);
+  mix-blend-mode:overlay;opacity:.25;animation:scan 6s linear infinite;z-index:10;
+}
 @keyframes scan{0%{background-position:0 0}100%{background-position:0 100%}}
+
+/* MOBILE GESTURES */
+@media(max-width:600px){
+  .title{font-size:28px}
+  #screen{height:300px}
+  .terminal-controls{flex-direction:column}
+}
+
+/* HOLOGRAPHIC EFFECT */
+.holo{
+  position:relative;
+  background:linear-gradient(135deg, rgba(0,255,156,.1) 0%, rgba(180,0,255,.1) 50%, rgba(0,195,255,.1) 100%);
+  background-size:200% 200%;
+  animation:holoShift 3s ease infinite;
+}
+@keyframes holoShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
 </style>
 </head>
 <body>
 <canvas id="matrix"></canvas>
+<div id="particles"></div>
 
 <div class="app">
+  <!-- AUTH SCREEN -->
+  <div class="panel" id="auth">
+    <div class="auth-lock">🔒</div>
+    <h2 class="title glitch" data-text="AUTHENTICATION" style="font-size:24px">AUTHENTICATION</h2>
+    <p class="subtitle">Nhập mật khẩu để truy cập hệ thống</p>
+    
+    <div class="group">
+      <label>PASSWORD</label>
+      <input type="password" id="authPass" placeholder="Enter password...">
+      <div class="error-msg" id="authError"></div>
+    </div>
+    
+    <div class="group">
+      <label>2FA CODE (6 digits)</label>
+      <input type="text" id="auth2fa" placeholder="000000" maxlength="6">
+    </div>
+    
+    <button class="btn" id="authBtn"><span>UNLOCK SYSTEM</span></button>
+    <p style="font-size:10px;margin-top:10px;opacity:.5">Hint: password = "hacker" / 2FA = "123456"</p>
+  </div>
+
   <!-- HOME -->
-  <div class="panel" id="home">
+  <div class="panel holo" id="home" style="display:none">
+    <div class="status-bar">
+      <div class="led green active" title="System Online"></div>
+      <div class="led blue active" title="Network Active"></div>
+      <div class="led purple active" title="Encryption Ready"></div>
+      <div class="led red" id="errorLed" title="No Errors"></div>
+    </div>
+    
     <h1 class="title glitch" data-text="CHIẾN TRICKER"><span class="typing cursor" id="typing">CHIẾN TRICKER</span></h1>
     <p class="subtitle">HMCTricker / HACKER — 17 Tuổi</p>
 
-    <div class="group"><label>TÊN FACEBOOK</label><input placeholder="Nhập dữ liệu..."></div>
-    <div class="group"><label>ID FACEBOOK</label><input placeholder="Nhập dữ liệu..."></div>
-    <div class="group"><label>KEY</label><input placeholder="Nhập dữ liệu..."></div>
+    <div class="group">
+      <label>TÊN FACEBOOK</label>
+      <input id="fbName" placeholder="Nhập dữ liệu...">
+      <div class="error-msg" id="nameError"></div>
+    </div>
+    <div class="group">
+      <label>ID FACEBOOK</label>
+      <input id="fbId" placeholder="Nhập dữ liệu...">
+      <div class="error-msg" id="idError"></div>
+    </div>
+    <div class="group">
+      <label>KEY</label>
+      <input id="fbKey" placeholder="Nhập dữ liệu...">
+      <div class="error-msg" id="keyError"></div>
+    </div>
+
+    <div class="progress-container" style="display:none" id="progressBar">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <div class="progress-text" id="progressText">Initializing...</div>
+    </div>
 
     <button class="btn" id="start"><span class="scramble" data-text="START">START</span></button>
+    <button class="btn" id="loadSession" style="margin-top:8px;background:rgba(0,195,255,.2)"><span>LOAD SESSION</span></button>
     <div id="msg"></div>
   </div>
 
   <!-- TERMINAL -->
   <div class="panel" id="terminal" style="display:none">
-    <p class="subtitle">Chiến Tricker — HACKER 17 Tuổi</p>
+    <div class="status-bar">
+      <div class="led green active"></div>
+      <div class="led blue active"></div>
+      <div class="led purple active"></div>
+      <div class="led red" id="termErrorLed"></div>
+    </div>
+    
+    <p class="subtitle">Chiến Tricker — HACKER 17 Tuổi | Session Active</p>
     <div id="screen"></div>
-    <button class="btn" id="back"><span>Stop</span></button>
+    
+    <div class="terminal-controls">
+      <button class="btn" id="back" style="flex:1"><span>STOP</span></button>
+      <button class="btn" id="export" style="flex:1;background:rgba(0,195,255,.2)"><span>EXPORT</span></button>
+      <button class="btn" id="clear" style="flex:1;background:rgba(255,230,0,.2)"><span>CLEAR</span></button>
+    </div>
   </div>
 </div>
 
+<!-- ENCRYPTION OVERLAY -->
+<div class="encrypt-overlay" id="encryptOverlay">
+  <div class="encrypt-box">
+    <div class="encrypt-text" id="encryptText">ENCRYPTING...</div>
+    <div class="spinner"></div>
+  </div>
+</div>
+
+<!-- INSTALL PWA -->
+<div class="install-prompt" id="installPrompt">
+  📱 Install App
+</div>
+
+<!-- FPS METER -->
+<div id="fpsMeter" style="position:fixed;right:10px;top:10px;z-index:9;font-family:'Share Tech Mono';font-size:12px;color:#00ff9c;text-shadow:0 0 10px #00ff9c"></div>
+
 <script>
-/* ================= AUDIO (SUBTLE) ================= */
-let ctx;function beep(freq=900,dur=0.05,type='square'){try{if(!ctx) ctx=new (window.AudioContext||window.webkitAudioContext)();const o=ctx.createOscillator();const g=ctx.createGain();o.type=type;o.frequency.value=freq;g.gain.value=0.04;o.connect(g);g.connect(ctx.destination);o.start();o.stop(ctx.currentTime+dur)}catch(e){}}
+/* ================= STORAGE ================= */
+const store={
+  save(key,val){try{localStorage.setItem(key,JSON.stringify(val))}catch(e){}},
+  load(key){try{return JSON.parse(localStorage.getItem(key))}catch(e){return null}}
+};
+
+/* ================= AUDIO ================= */
+let ctx;
+function beep(freq=900,dur=0.05,type='square',vol=0.04){
+  try{
+    if(!ctx) ctx=new (window.AudioContext||window.webkitAudioContext)();
+    const o=ctx.createOscillator();
+    const g=ctx.createGain();
+    o.type=type;
+    o.frequency.value=freq;
+    g.gain.value=vol;
+    o.connect(g);
+    g.connect(ctx.destination);
+    o.start();
+    o.stop(ctx.currentTime+dur);
+  }catch(e){}
+}
 function glitchSound(){[900,1200,700].forEach((f,i)=>setTimeout(()=>beep(f,0.04,'sawtooth'),i*70))}
+function typeSound(){beep(1200,0.02,'sine',0.02)}
+function errorSound(){[800,600,400].forEach((f,i)=>setTimeout(()=>beep(f,0.1,'sawtooth',0.06),i*100))}
+function successSound(){[600,800,1000,1200].forEach((f,i)=>setTimeout(()=>beep(f,0.08,'sine',0.04),i*80))}
+
+/* ================= HAPTIC ================= */
+function haptic(type='light'){
+  if(navigator.vibrate){
+    if(type==='light') navigator.vibrate(10);
+    else if(type==='medium') navigator.vibrate(20);
+    else if(type==='heavy') navigator.vibrate([20,10,20]);
+  }
+}
 
 /* ================= FPS METER ================= */
-const meter=document.createElement('div');Object.assign(meter.style,{position:'fixed',right:'10px',top:'10px',zIndex:9,fontFamily:"'Share Tech Mono'",fontSize:'12px',color:'#00ff9c',textShadow:'0 0 10px #00ff9c'});document.body.appendChild(meter);
-let last=performance.now(),frames=0,fps=0;function tick(t){frames++;if(t-last>=1000){fps=frames;frames=0;last=t}meter.textContent=`FPS:${fps} | LOAD:${Math.min(100,Math.floor(fps?1600/fps:90))}%`;requestAnimationFrame(tick)}requestAnimationFrame(tick);
+const meter=document.getElementById('fpsMeter');
+let last=performance.now(),frames=0,fps=0;
+function tick(t){
+  frames++;
+  if(t-last>=1000){
+    fps=frames;
+    frames=0;
+    last=t;
+  }
+  meter.textContent=`FPS:${fps} | LOAD:${Math.min(100,Math.floor(fps?1600/fps:90))}%`;
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
 
-/* ================= MATRIX RAIN ================= */
-const c=document.getElementById('matrix'),x=c.getContext('2d');let w,h,cols,drops;
-function resize(){w=c.width=innerWidth;h=c.height=innerHeight;cols=Math.floor(w/14);drops=Array(cols).fill(1)}window.addEventListener('resize',resize);resize();
+/* ================= MATRIX RAIN (Optimized) ================= */
+const c=document.getElementById('matrix'),x=c.getContext('2d');
+let w,h,cols,drops,matrixActive=true;
+function resize(){
+  w=c.width=innerWidth;
+  h=c.height=innerHeight;
+  cols=Math.floor(w/14);
+  drops=Array(cols).fill(1);
+}
+window.addEventListener('resize',resize);
+resize();
+
 const chars='01アカサタナハマヤラワABCDEFGHIJKLMNOPQRSTUVWXYZ#$%&*';
-setInterval(()=>{x.fillStyle='rgba(0,0,0,0.06)';x.fillRect(0,0,w,h);for(let i=0;i<drops.length;i++){const t=chars[Math.random()*chars.length|0];x.fillStyle=`hsl(${120+Math.random()*160},100%,60%)`;x.fillText(t,i*14,drops[i]*14);drops[i]=(drops[i]*14>h&&Math.random()>0.985)?0:drops[i]+1}},45);
+let matrixInterval=setInterval(()=>{
+  if(!matrixActive) return;
+  x.fillStyle='rgba(0,0,0,0.06)';
+  x.fillRect(0,0,w,h);
+  for(let i=0;i<drops.length;i++){
+    const t=chars[Math.random()*chars.length|0];
+    x.fillStyle=`hsl(${120+Math.random()*160},100%,60%)`;
+    x.fillText(t,i*14,drops[i]*14);
+    drops[i]=(drops[i]*14>h&&Math.random()>0.985)?0:drops[i]+1;
+  }
+},45);
 
-/* ================= TYPING ================= */
-const txt='CHIẾN TRICKER';const el=document.getElementById('typing');let ti=0;el.textContent='';(function type(){if(ti<=txt.length){el.textContent=txt.slice(0,ti++);setTimeout(type,80)}})();
+/* ================= PARTICLES ================= */
+const pContainer=document.getElementById('particles');
+function createParticles(n=30){
+  for(let i=0;i<n;i++){
+    const p=document.createElement('div');
+    p.className='particle';
+    p.style.left=Math.random()*100+'%';
+    p.style.top=Math.random()*100+'%';
+    p.style.animationDelay=Math.random()*8+'s';
+    p.style.animationDuration=(8+Math.random()*4)+'s';
+    pContainer.appendChild(p);
+  }
+}
+createParticles();
+
+/* ================= TYPING ANIMATION ================= */
+const txt='CHIẾN TRICKER';
+const el=document.getElementById('typing');
+let ti=0;
+el.textContent='';
+(function type(){
+  if(ti<=txt.length){
+    el.textContent=txt.slice(0,ti++);
+    typeSound();
+    setTimeout(type,80);
+  }
+})();
 
 /* ================= SCRAMBLE ================= */
 const letters='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-function scramble(el){let it=0;const orig=el.dataset.text;const iv=setInterval(()=>{el.textContent=orig.split('').map((c,idx)=>idx<it?c:letters[Math.random()*letters.length|0]).join('');if(it>=orig.length){clearInterval(iv);el.textContent=orig}it+=1/3;},28)}
+function scramble(el){
+  let it=0;
+  const orig=el.dataset.text;
+  const iv=setInterval(()=>{
+    el.textContent=orig.split('').map((c,idx)=>idx<it?c:letters[Math.random()*letters.length|0]).join('');
+    if(it>=orig.length){
+      clearInterval(iv);
+      el.textContent=orig;
+    }
+    it+=1/3;
+  },28);
+}
 
-/* ================= TERMINAL SIMULATION (BATCH, FAKE) ================= */
-const home=document.getElementById('home');const term=document.getElementById('terminal');
-const screen=document.getElementById('screen');const msg=document.getElementById('msg');const btn=document.getElementById('start');
+/* ================= AUTH SYSTEM ================= */
+const authScreen=document.getElementById('auth');
+const authPass=document.getElementById('authPass');
+const auth2fa=document.getElementById('auth2fa');
+const authBtn=document.getElementById('authBtn');
+const authError=document.getElementById('authError');
+
+authBtn.onclick=()=>{
+  const pass=authPass.value.trim();
+  const code=auth2fa.value.trim();
+  
+  if(pass!=='hacker'){
+    authError.textContent='❌ Invalid password';
+    authPass.classList.add('error');
+    errorSound();
+    haptic('heavy');
+    setTimeout(()=>authPass.classList.remove('error'),300);
+    return;
+  }
+  
+  if(code!=='123456'){
+    authError.textContent='❌ Invalid 2FA code';
+    auth2fa.classList.add('error');
+    errorSound();
+    haptic('heavy');
+    setTimeout(()=>auth2fa.classList.remove('error'),300);
+    return;
+  }
+  
+  // SUCCESS
+  successSound();
+  haptic('medium');
+  showEncryption('AUTHENTICATION SUCCESS',()=>{
+    authScreen.style.display='none';
+    home.style.display='block';
+  });
+};
+
+/* ================= ENCRYPTION OVERLAY ================= */
+const encryptOverlay=document.getElementById('encryptOverlay');
+const encryptText=document.getElementById('encryptText');
+
+function showEncryption(text,callback,duration=2000){
+  encryptText.textContent=text;
+  encryptOverlay.classList.add('active');
+  setTimeout(()=>{
+    encryptOverlay.classList.remove('active');
+    if(callback) callback();
+  },duration);
+}
+
+/* ================= VALIDATION ================= */
+function validate(){
+  let valid=true;
+  const name=document.getElementById('fbName').value.trim();
+  const id=document.getElementById('fbId').value.trim();
+  const key=document.getElementById('fbKey').value.trim();
+  
+  const nameErr=document.getElementById('nameError');
+  const idErr=document.getElementById('idError');
+  const keyErr=document.getElementById('keyError');
+  
+  nameErr.textContent='';
+  idErr.textContent='';
+  keyErr.textContent='';
+  
+  if(!name){
+    nameErr.textContent='⚠ Tên không được để trống';
+    document.getElementById('fbName').classList.add('error');
+    setTimeout(()=>document.getElementById('fbName').classList.remove('error'),300);
+    valid=false;
+  }
+  
+  if(!id||!/^\d+$/.test(id)){
+    idErr.textContent='⚠ ID phải là số';
+    document.getElementById('fbId').classList.add('error');
+    setTimeout(()=>document.getElementById('fbId').classList.remove('error'),300);
+    valid=false;
+  }
+  
+  if(!key||key.length<8){
+    keyErr.textContent='⚠ Key phải có ít nhất 8 ký tự';
+    document.getElementById('fbKey').classList.add('error');
+    setTimeout(()=>document.getElementById('fbKey').classList.remove('error'),300);
+    valid=false;
+  }
+  
+  return valid;
+}
+
+/* ================= TERMINAL SIMULATION ================= */
+const home=document.getElementById('home');
+const term=document.getElementById('terminal');
+const screen=document.getElementById('screen');
+const msg=document.getElementById('msg');
+const btn=document.getElementById('start');
+const loadBtn=document.getElementById('loadSession');
+const progressBar=document.getElementById('progressBar');
+const progressFill=document.getElementById('progressFill');
+const progressText=document.getElementById('progressText');
 
 const IP_POOL=Array.from({length:200},()=>`${Math.random()*255|0}.${Math.random()*255|0}.${Math.random()*255|0}.${Math.random()*255|0}`);
 const COOKIE_POOL=Array.from({length:200},(_,i)=>`COOKIE_${String(i+1).padStart(3,'0')}`);
 const UA_POOL=['Mozilla/5.0 (X11; Linux x86_64)','curl/8.4.0','python-requests/2.31.0','Mozilla/5.0 (Windows NT 10.0; Win64; x64)'];
 const ASN_POOL=['AS13335','AS15169','AS16509','AS8075','AS4837'];
 
-const MAX_LINES=700;let timer=null,cycle=0,ip=0,ck=0;
-function log(text, cls='info'){const d=document.createElement('div');d.className='log '+cls;d.textContent=text;screen.appendChild(d);while(screen.children.length>MAX_LINES) screen.removeChild(screen.firstChild);screen.scrollTop=screen.scrollHeight}
-function rnd(min,max){return Math.floor(min+Math.random()*(max-min))}
-function batch(ipAddr,cookie){return[
-  [`root@node-7:/opt/core# ip link set tun0 up mtu 1400`,'ok'],
-  [`root@node-7:/opt/core# ip route replace default via ${ipAddr}`,'info'],
-  [`root@node-7:/opt/core# asn lookup ${ipAddr} -> ${ASN_POOL[Math.random()*ASN_POOL.length|0]}`,'info'],
-  [`root@node-7:/opt/core# ua rotate --set="${UA_POOL[Math.random()*UA_POOL.length|0]}"`,'info'],
-  [`root@node-7:/opt/core# session load --cookie=${cookie}`,'warn'],
-  [`root@node-7:/opt/core# pipeline stage=execute status=RUNNING`,'warn']
-]}
-function loop(){const delay=rnd(800,1000);timer=setTimeout(()=>{cycle++;ip=(ip+1)%IP_POOL.length;ck=(ck+1)%COOKIE_POOL.length;const b=batch(IP_POOL[ip],COOKIE_POOL[ck]);const lines=rnd(3,5);for(let i=0;i<lines;i++){const [t,c]=b[(cycle+i)%b.length];log(t,c)}if(cycle%rnd(2,4)===0){log('root@node-7:/opt/core# processing…','info');glitchSound();timer=setTimeout(loop,rnd(2000,3000))}else{loop()}},delay)}
+const MAX_LINES=700;
+let timer=null,cycle=0,ip=0,ck=0,logs=[];
 
-btn.addEventListener('mouseenter',()=>scramble(btn.querySelector('.scramble')));
-btn.onclick=()=>{msg.style.color='var(--neon-y)';msg.textContent='> KEY Hợp lệ (Bắt đầu chạy)';glitchSound();setTimeout(()=>{home.style.display='none';term.style.display='block';screen.innerHTML='';cycle=ip=ck=0;loop()},600)};
-document.getElementById('back').onclick=()=>{clearTimeout(timer);timer=null;home.style.display='block';term.style.display='none';msg.textContent=''};
+function log(text,cls='info'){
+  const d=document.createElement('div');
+  d.className='log '+cls;
+  d.textContent=text;
+  screen.appendChild(d);
+  logs.push({text,cls,time:Date.now()});
+  
+  while(screen.children.length>MAX_LINES){
+    screen.removeChild(screen.firstChild);
+  }
+  screen.scrollTop=screen.scrollHeight;
+  typeSound();
+}
+
+function rnd(min,max){return Math.floor(min+Math.random()*(max-min))}
+
+function batch(ipAddr,cookie){
+  return[
+    [`root@node-7:/opt/core# ip link set tun0 up mtu 1400`,'ok'],
+    [`root@node-7:/opt/core# ip route replace default via ${ipAddr}`,'info'],
+    [`root@node-7:/opt/core# asn lookup ${ipAddr} -> ${ASN_POOL[Math.random()*ASN_POOL.length|0]}`,'info'],
+    [`root@node-7:/opt/core# ua rotate --set="${UA_POOL[Math.random()*UA_POOL.length|0]}"`,'info'],
+    [`root@node-7:/opt/core# session load --cookie=${cookie}`,'warn'],
+    [`root@node-7:/opt/core# pipeline stage=execute status=RUNNING`,'warn']
+  ];
+}
+
+function loop(){
+  const delay=rnd(800,1000);
+  timer=setTimeout(()=>{
+    cycle++;
+    ip=(ip+1)%IP_POOL.length;
+    ck=(ck+1)%COOKIE_POOL.length;
+    const b=batch(IP_POOL[ip],COOKIE_POOL[ck]);
+    const lines=rnd(3,5);
+    
+    for(let i=0;i<lines;i++){
+      const [t,c]=b[(cycle+i)%b.length];
+      log(t,c);
+    }
+    
+    if(cycle%rnd(2,4)===0){
+      log('root@node-7:/opt/core# processing…','info');
+      glitchSound();
+      timer=setTimeout(loop,rnd(2000,3000));
+    }else{
+      loop();
+    }
+  },delay);
+}
+
+/* ================= BUTTON EVENTS ================= */
+btn.addEventListener('mouseenter',()=>{
+  scramble(btn.querySelector('.scramble'));
+  haptic('light');
+});
+
+btn.onclick=()=>{
+  if(!validate()){
+    errorSound();
+    haptic('heavy');
+    return;
+  }
+  
+  // Save session
+  const session={
+    name:document.getElementById('fbName').value,
+    id:document.getElementById('fbId').value,
+    key:document.getElementById('fbKey').value,
+    timestamp:Date.now()
+  };
+  store.save('session',session);
+  
+  msg.style.color='var(--neon-y)';
+  msg.textContent='> KEY Hợp lệ (Bắt đầu chạy)';
+  glitchSound();
+  haptic('medium');
+  
+  // Show progress
+  progressBar.style.display='block';
+  let prog=0;
+  const progInt=setInterval(()=>{
+    prog+=Math.random()*15;
+    if(prog>=100){
+      prog=100;
+      clearInterval(progInt);
+      setTimeout(startTerminal,500);
+    }
+    progressFill.style.width=prog+'%';
+    progressText.textContent=`Initializing... ${Math.floor(prog)}%`;
+  },200);
+};
+
+function startTerminal(){
+  showEncryption('ESTABLISHING CONNECTION',()=>{
+    home.style.display='none';
+    term.style.display='block';
+    screen.innerHTML='';
+    cycle=ip=ck=0;
+    logs=[];
+    loop();
+  });
+}
+
+loadBtn.onclick=()=>{
+  const session=store.load('session');
+  if(!session){
+    msg.style.color='var(--neon-r)';
+    msg.textContent='❌ No saved session found';
+    errorSound();
+    haptic('heavy');
+    return;
+  }
+  
+  document.getElementById('fbName').value=session.name||'';
+  document.getElementById('fbId').value=session.id||'';
+  document.getElementById('fbKey').value=session.key||'';
+  
+  msg.style.color='var(--neon-g)';
+  msg.textContent='✓ Session loaded';
+  successSound();
+  haptic('light');
+};
+
+document.getElementById('back').onclick=()=>{
+  clearTimeout(timer);
+  timer=null;
+  showEncryption('DISCONNECTING',()=>{
+    home.style.display='block';
+    term.style.display='none';
+    msg.textContent='';
+    progressBar.style.display='none';
+    progressFill.style.width='0%';
+  });
+};
+
+document.getElementById('export').onclick=()=>{
+  if(logs.length===0){
+    errorSound();
+    return;
+  }
+  
+  const text=logs.map(l=>`[${new Date(l.time).toISOString()}] ${l.text}`).join('\n');
+  const blob=new Blob([text],{type:'text/plain'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=`tricker_log_${Date.now()}.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
+  
+  successSound();
+  haptic('medium');
+  log('>>> LOG EXPORTED <<<','ok');
+};
+
+document.getElementById('clear').onclick=()=>{
+  screen.innerHTML='';
+  logs=[];
+  beep(600,0.1);
+  haptic('light');
+};
+
+/* ================= PWA INSTALL ================= */
+let deferredPrompt;
+const installPrompt=document.getElementById('installPrompt');
+
+window.addEventListener('beforeinstallprompt',(e)=>{
+  e.preventDefault();
+  deferredPrompt=e;
+  installPrompt.style.display='block';
+});
+
+installPrompt.onclick=async()=>{
+  if(!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const {outcome}=await deferredPrompt.userChoice;
+  deferredPrompt=null;
+  installPrompt.style.display='none';
+  if(outcome==='accepted'){
+    successSound();
+    haptic('heavy');
+  }
+};
+
+/* ================= TOUCH GESTURES ================= */
+let touchStartX=0,touchEndX=0;
+
+document.addEventListener('touchstart',e=>{
+  touchStartX=e.changedTouches[0].screenX;
+});
+
+document.addEventListener('touchend',e=>{
+  touchEndX=e.changedTouches[0].screenX;
+  handleGesture();
+});
+
+function handleGesture(){
+  const diff=touchEndX-touchStartX;
+  if(Math.abs(diff)<50) return;
+  
+  if(diff>0&&term.style.display==='block'){
+    // Swipe right = go back
+    document.getElementById('back').click();
+    haptic('light');
+  }
+}
+
+/* ================= VISIBILITY OPTIMIZATION ================= */
+document.addEventListener('visibilitychange',()=>{
+  matrixActive=!document.hidden;
+});
+
+/* ================= SERVICE WORKER ================= */
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js').catch(e=>console.log('SW error:',e));
+}
 </script>
 </body>
 </html>
