@@ -314,7 +314,7 @@ body::after{
     </div>
 
     <button class="btn" id="start"><span class="scramble" data-text="START">START</span></button>
-    <button class="btn" id="loadSession" style="margin-top:8px;background:rgba(0,195,255,.2)"><span>LOAD SESSION</span></button>
+    <button class="btn" id="loadSession" style="margin-top:8px;background:rgba(0,195,255,.2)"><span>Restoring Environment</span></button>
     <div id="msg"></div>
   </div>
 
@@ -327,13 +327,13 @@ body::after{
       <div class="led red" id="termErrorLed"></div>
     </div>
     
-    <p class="subtitle">Chiến Tricker — HACKER 17 Tuổi | Session Active</p>
+    <p class="subtitle">HMCTricker / Hacker 2026</p>
     <div id="screen"></div>
     
     <div class="terminal-controls">
       <button class="btn" id="back" style="flex:1"><span>STOP</span></button>
-      <button class="btn" id="export" style="flex:1;background:rgba(0,195,255,.2)"><span>EXPORT</span></button>
-      <button class="btn" id="clear" style="flex:1;background:rgba(255,230,0,.2)"><span>CLEAR</span></button>
+      <button class="btn" id="export" style="flex:1;background:rgba(0,195,255,.2)"><span>Save Session</span></button>
+      <button class="btn" id="clear" style="flex:1;background:rgba(255,230,0,.2)"><span>Clear All</span></button>
     </div>
   </div>
 </div>
@@ -506,7 +506,7 @@ authBtn.onclick=()=>{
   // SUCCESS
   successSound();
   haptic('medium');
-  showEncryption('AUTHENTICATION SUCCESS',()=>{
+  showEncryption(' ĐĂNG NHẬP THÀNH CÔNG !',()=>{
     authScreen.style.display='none';
     home.style.display='block';
   });
@@ -677,7 +677,7 @@ btn.onclick=()=>{
 };
 
 function startTerminal(){
-  showEncryption('ESTABLISHING CONNECTION',()=>{
+  showEncryption('ĐANG BẮT ĐẦU TẤN CÔNG',()=>{
     home.style.display='none';
     term.style.display='block';
     screen.innerHTML='';
