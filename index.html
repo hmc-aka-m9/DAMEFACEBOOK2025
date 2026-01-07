@@ -677,7 +677,7 @@ btn.onclick=()=>{
 };
 
 function startTerminal(){
-  showEncryption('ĐANG BẮT ĐẦU TẤN CÔNG',()=>{
+  showEncryption('Start an attack',()=>{
     home.style.display='none';
     term.style.display='block';
     screen.innerHTML='';
@@ -710,7 +710,7 @@ loadBtn.onclick=()=>{
 document.getElementById('back').onclick=()=>{
   clearTimeout(timer);
   timer=null;
-  showEncryption('DISCONNECTING',()=>{
+  showEncryption('Stop an attack',()=>{
     home.style.display='block';
     term.style.display='none';
     msg.textContent='';
